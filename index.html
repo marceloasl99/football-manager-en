@@ -3265,14 +3265,18 @@ const SCOUT_TIERS = {
 };
 
 const STADIUM_UPGRADES = [
-  { key:"stands",     name:"Stands Expansion",                     unit:"+2,500 seats",  cost:25000,  upkeep:250,  desc:"Expand stadium capacity by 2,500 seats to grow matchday gate receipts." },
-  { key:"grass",      name:"Hybrid Turf Pitch",                     unit:"+10 quality",   cost:15000,  upkeep:180,  desc:"Professional hybrid playing surface that boosts home tactical performance." },
-  { key:"lighting",   name:"4K LED Floodlights",                    unit:"+10 lighting",  cost:10000,  upkeep:100,  desc:"Broadcast-standard LED lighting for evening fixtures and European nights." },
-  { key:"vipBoxes",   name:"Executive VIP Suites",                  unit:"+5 suites",     cost:20000,  upkeep:200,  desc:"High-margin luxury hospitality boxes for corporate sponsors." },
-  { key:"medical",    name:"High-Performance Medical & Rehab",      unit:"+10 medical",   cost:18000,  upkeep:150,  desc:"Elite physiotherapy center to accelerate weekly squad stamina recovery." },
-  { key:"academy",    name:"Youth Academy Center",                  unit:"+10 academy",   cost:22000,  upkeep:200,  desc:"State-of-the-art youth facilities to unearth high-potential wonderkids." },
-  { key:"multiArena", name:"Multi-Purpose Arena & Expo Center",     unit:"€18k/wk income",cost:380000, upkeep:1800, desc:"Host expos, concerts and conventions, generating €18,000 passive income every single week." },
-  { key:"fanShow",    name:"Pre-Match Light Show & Fan Pyrotechnics",unit:"+12% gate, +3% morale", cost:160000, upkeep:900, desc:"Laser light shows, DJs and pyrotechnics creating a cauldron atmosphere before kickoff." }
+  { key: "seats",      label: "Stands Expansion (+1,000 seats)",     cost: 25000,  desc: "Expand terrace and seating capacity by +1,000 seats." },
+  { key: "seatsFast",  label: "Upper Tier Expansion (+2,500 seats)", cost: 65000,  desc: "Accelerated construction of an upper tier (+2,500 seats)." },
+  { key: "seatsMega",  label: "New Grandstand Tier (+5,000 seats)",  cost: 130000, desc: "Major architectural development adding a massive new stand (+5,000 seats)." },
+  { key: "pitch",      label: "Hybrid Turf Pitch (+10%)",           cost: 15000,  desc: "Professional hybrid turf boosting home possession and match strength." },
+  { key: "facilities", label: "Club Facilities & Megastore (+10%)",  cost: 20000,  desc: "Modern club house, fan pubs, and retail megastore increasing matchday spending." },
+  { key: "vipBoxes",   label: "Corporate VIP Suites (+10%)",         cost: 28000,  desc: "Luxury hospitality suites increasing commercial matchday revenue." },
+  { key: "lighting",   label: "4K LED Floodlights & Screens (+10%)", cost: 18000,  desc: "Broadcast-standard floodlights and digital video scoreboards." },
+  { key: "medical",    label: "Medical & Rehab Center (+10%)",       cost: 12000,  desc: "High-performance physiotherapy center accelerating squad stamina recovery." },
+  { key: "press",      label: "Media & Marketing Suite (+10%)",     cost: 10000,  desc: "Expands media outreach, brand sponsorships, and season ticket base." },
+  { key: "academy",    label: "Youth Academy Center (+10%)",         cost: 22000,  desc: "State-of-the-art youth coaching facilities unearthing future stars." },
+  { key: "multiArena", label: "Multi-Purpose Arena (+10%)",          cost: 50000,  desc: "Multi-use indoor arena hosting concerts & expos for €/£18k weekly passive income." },
+  { key: "fanShow",    label: "Pre-Match Light Show & Pyro (+10%)",  cost: 35000,  desc: "Laser shows, stadium DJs, and pyrotechnics (+12% gate receipts, +3% morale)." }
 ];
 
 const NAMING_RIGHTS_DEALS = [
@@ -5030,24 +5034,29 @@ function adjustInput(inputId, delta){
 // --------------- STADIUM UPGRADES & MANAGEMENT (v4.0) ---------------
 function upgrade(what){
   const pt = G.teams[G.teamName];
+  // Support both alias forms
+  if(what === "stands") what = "seats";
+  if(what === "grass") what = "pitch";
+
   const costs = {
-    seats: {cost: 25000, max: () => pt.stadium >= 100000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+500); }, msg:"🏟️ +500 lugares construídos!"},
-    seatsFast: {cost: 75000, max: () => pt.stadium >= 100000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+1000); }, msg:"🏟️ +1.000 lugares (expansão rápida)!"},
-    seatsMega: {cost: 320000, max: () => pt.stadium >= 100000, effect:()=>{ pt.stadium = Math.min(100000, pt.stadium+5000); }, msg:"🏟️ Novo anel inaugurado (+5.000 lugares)!"},
-    pitch: {cost: 15000, max: () => pt.pitch >= 100, effect:()=>{ pt.pitch = Math.min(100, pt.pitch+10); }, msg:"🌱 Pitch reformado (+10%)!"},
-    facilities: {cost: 20000, max: () => pt.facilities >= 100, effect:()=>{ pt.facilities = Math.min(100, pt.facilities+10); }, msg:"🛍️ CT, Bares e Loja modernizados (+10%)!"},
-    vipBoxes: {cost: 28000, max: () => (pt.vipBoxes||0) >= 100, effect:()=>{ pt.vipBoxes = Math.min(100, (pt.vipBoxes||10)+10); }, msg:"🥂 VIP Suites & Lounge ampliados (+10%)!"},
-    lighting: {cost: 18000, max: () => (pt.lighting||0) >= 100, effect:()=>{ pt.lighting = Math.min(100, (pt.lighting||15)+10); }, msg:"💡 Floodlights LED e Telão atualizados (+10%)!"},
-    medical: {cost: 12000, max: () => pt.medical >= 100, effect:()=>{ pt.medical = Math.min(100, pt.medical+10); }, msg:"🏥 DM e Fisioterapia aprimorados (+10%)!"},
-    press: {cost: 10000, max: () => pt.press >= 100, effect:()=>{ pt.press = Math.min(100, pt.press+10); }, msg:"📣 Marketing & Members expandidos (+10%)!"},
-    academy: {cost: 22000, max: () => (pt.academy||0) >= 100, effect:()=>{ pt.academy = Math.min(100, (pt.academy||15)+10); }, msg:"🌱 Youth Academy & Olheiros evoluído (+10%)!"},
-    multiArena: {cost: 50000, max: () => (pt.multiArena||0) >= 100, effect:()=>{ pt.multiArena = Math.min(100, (pt.multiArena||0)+10); }, msg:"🎪 Multi-Purpose Arena expandida (+10% em receitas corporativas e shows)!"},
-    fanShow: {cost: 35000, max: () => (pt.fanShow||0) >= 100, effect:()=>{ pt.fanShow = Math.min(100, (pt.fanShow||0)+10); }, msg:"🎆 Espetáculo & Pirotecnia de Matchday aprimorado (+10%)!"}
+    seats:     { cost: 25000,  max: () => pt.stadium >= 120000, effect: () => { pt.stadium = Math.min(120000, (pt.stadium||6500) + 1000); }, msg: "🏟️ +1,000 seats built! Capacity increased!" },
+    seatsFast: { cost: 65000,  max: () => pt.stadium >= 120000, effect: () => { pt.stadium = Math.min(120000, (pt.stadium||6500) + 2500); }, msg: "🏟️ +2,500 seats completed in accelerated expansion!" },
+    seatsMega: { cost: 130000, max: () => pt.stadium >= 120000, effect: () => { pt.stadium = Math.min(120000, (pt.stadium||6500) + 5000); }, msg: "🏟️ Magnificent new grandstand tier inaugurated (+5,000 seats)!" },
+    pitch:     { cost: 15000,  max: () => pt.pitch >= 100,      effect: () => { pt.pitch = Math.min(100, (pt.pitch||35) + 10); }, msg: "🌱 Hybrid pitch upgraded (+10%)!" },
+    facilities:{ cost: 20000,  max: () => pt.facilities >= 100, effect: () => { pt.facilities = Math.min(100, (pt.facilities||20) + 10); }, msg: "🛍️ Stadium facilities and retail modernized (+10%)!" },
+    vipBoxes:  { cost: 28000,  max: () => (pt.vipBoxes||0) >= 100, effect: () => { pt.vipBoxes = Math.min(100, (pt.vipBoxes||10) + 10); }, msg: "🥂 Executive VIP suites and lounges expanded (+10%)!" },
+    lighting:  { cost: 18000,  max: () => (pt.lighting||0) >= 100, effect: () => { pt.lighting = Math.min(100, (pt.lighting||15) + 10); }, msg: "💡 4K LED floodlights and screens upgraded (+10%)!" },
+    medical:   { cost: 12000,  max: () => pt.medical >= 100,    effect: () => { pt.medical = Math.min(100, (pt.medical||20) + 10); }, msg: "🏥 High-performance medical center improved (+10%)!" },
+    press:     { cost: 10000,  max: () => pt.press >= 100,      effect: () => { pt.press = Math.min(100, (pt.press||15) + 10); }, msg: "📢 Media, marketing and commercial operations expanded (+10%)!" },
+    academy:   { cost: 22000,  max: () => (pt.academy||0) >= 100, effect: () => { pt.academy = Math.min(100, (pt.academy||15) + 10); }, msg: "⭐ Youth academy and talent development enhanced (+10%)!" },
+    multiArena:{ cost: 50000,  max: () => (pt.multiArena||0) >= 100, effect: () => { pt.multiArena = Math.min(100, (pt.multiArena||0) + 10); }, msg: "🎪 Multi-Purpose Arena upgraded (+10% corporate & expo revenue)!" },
+    fanShow:   { cost: 35000,  max: () => (pt.fanShow||0) >= 100, effect: () => { pt.fanShow = Math.min(100, (pt.fanShow||0) + 10); }, msg: "🎆 Pre-Match Light Show & Fan Pyrotechnics upgraded (+10%)!" }
   };
+
   const u = costs[what];
   if(!u) return;
-  if(u.max && u.max()){ showMsg("Este setor já atingiu o nível máximo (100%)!", "info"); render(); return; }
-  if(pt.money < u.cost){ showMsg("Insufficient funds!", "error"); render(); return; }
+  if(u.max && u.max()){ showMsg("This sector has already reached the maximum level!", "info"); render(); return; }
+  if(pt.money < u.cost){ showMsg("Insufficient funds in club treasury!", "error"); render(); return; }
   pt.money -= u.cost;
   u.effect();
   checkSpecialBadges();
@@ -6542,10 +6551,12 @@ function renderStadium(){
 
   // stadiumTab === 'overview'
   const statValues = {
-    seats: `${pt.stadium.toLocaleString()} lug.`,
-    seatsFast: `${pt.stadium.toLocaleString()} lug.`,
-    seatsMega: `${pt.stadium.toLocaleString()} lug.`,
+    seats: `${pt.stadium.toLocaleString()} seats`,
+    seatsFast: `${pt.stadium.toLocaleString()} seats`,
+    seatsMega: `${pt.stadium.toLocaleString()} seats`,
+    stands: `${pt.stadium.toLocaleString()} seats`,
     pitch: `${pt.pitch}%`,
+    grass: `${pt.pitch}%`,
     facilities: `${pt.facilities}%`,
     vipBoxes: `${pt.vipBoxes || 10}%`,
     lighting: `${pt.lighting || 15}%`,
@@ -6561,11 +6572,11 @@ function renderStadium(){
     <h3>
       <span>🏟️ ${stName} <span class="badge ${tier.badge}" style="margin-left:6px">${tier.name}</span></span>
       <div class="flex-row">
-        <button class="btn sm" onclick="openRenameStadiumModal()">✏️ Renomear</button>
-        <button class="btn sm gold" onclick="stadiumTab='estimator';render()">🎟️ Ingressos (R$ ${pt.ticketPrice||20})</button>
+        <button class="btn sm" onclick="openRenameStadiumModal()">✏️ Rename</button>
+        <button class="btn sm gold" onclick="stadiumTab='estimator';render()">🎟️ Tickets (${fmtMoney(pt.ticketPrice||20)})</button>
       </div>
     </h3>
-    ${pt.stadium < 40000 ? `<p class="small warn mb">⚠️ Série A exige estádio com no mínimo 40.000 lugares (atual: ${pt.stadium.toLocaleString()} · faltam ${(40000 - pt.stadium).toLocaleString()} lugares).</p>` : `<p class="small success mb">✅ Arena Padrão FIFA homologada pela CBF (${pt.stadium.toLocaleString()} lugares).</p>`}
+    ${pt.stadium < 40000 ? `<p class="small warn mb">⚠️ Top flight requires a stadium with at least 40,000 capacity (current: ${pt.stadium.toLocaleString()} · ${Math.max(0, 40000 - pt.stadium).toLocaleString()} more seats needed).</p>` : `<p class="small success mb">✅ World-Class Stadium certified for European and Top-Flight fixtures (${pt.stadium.toLocaleString()} capacity).</p>`}
 
     <div class="grid-2 mb">
       <div>
@@ -6573,35 +6584,35 @@ function renderStadium(){
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;justify-content:center">
         <div class="kpi-box">
-          <span class="kpi-label">Estimativa de Renda por Jogo em Home</span>
-          <span class="kpi-val success">+${fmtMoney(est.homeMatchTotal)} <span class="small font-normal muted">(Público: ${est.attendance.toLocaleString()} · ${est.occPct}%)</span></span>
-          <span class="kpi-sub">Ingresso: R$ ${est.ticketPrice} · VIP: ${fmtMoney(est.vipIncome)} · Matchday: ${fmtMoney(est.matchdayIncome)}</span>
+          <span class="kpi-label">Projected Matchday Revenue (Home Game)</span>
+          <span class="kpi-val success">+${fmtMoney(est.homeMatchTotal)} <span class="small font-normal muted">(Attendance: ${est.attendance.toLocaleString()} · ${est.occPct}%)</span></span>
+          <span class="kpi-sub">Ticket: ${fmtMoney(est.ticketPrice)} · VIP: ${fmtMoney(est.vipIncome)} · Matchday: ${fmtMoney(est.matchdayIncome)}</span>
         </div>
         <div class="kpi-box">
-          <span class="kpi-label">Quadro de Members-Torcedores & Sponsorship</span>
-          <span class="kpi-val info">${est.socios.toLocaleString()} sócios (+${fmtMoney(est.socioIncome)}/wk)</span>
-          <span class="kpi-sub">Recorde de Público: ${(pt.recordAttendance||0).toLocaleString()} · Maior Renda: ${fmtMoney(pt.recordGate||0)}</span>
+          <span class="kpi-label">Club Members & Commercial Sponsors</span>
+          <span class="kpi-val info">${est.socios.toLocaleString()} members (+${fmtMoney(est.socioIncome)}/wk)</span>
+          <span class="kpi-sub">Record Attendance: ${(pt.recordAttendance||0).toLocaleString()} · Record Gate: ${fmtMoney(pt.recordGate||0)}</span>
         </div>
         <div class="kpi-box">
-          <span class="kpi-label">Contrato de Naming Rights da Arena</span>
+          <span class="kpi-label">Stadium Naming Rights Agreement</span>
           <select style="max-width:100%;padding:6px 10px;font-size:0.84rem;margin-top:4px" onchange="selectNamingRights(this.value)">
-            ${NAMING_RIGHTS_DEALS.map(d => `<option value="${d.id}" ${(pt.namingRights||'none')===d.id?'selected':''}>${d.label} ${d.bonusPerWeek ? '(+'+fmtMoney(d.bonusPerWeek)+'/rod)' : ''}</option>`).join("")}
+            ${NAMING_RIGHTS_DEALS.map(d => `<option value="${d.id}" ${(pt.namingRights||'none')===d.id?'selected':''}>${d.label} ${d.bonusPerWeek ? '(+'+fmtMoney(d.bonusPerWeek)+'/wk)' : ''}</option>`).join("")}
           </select>
         </div>
       </div>
     </div>
 
-    <h4 class="small muted mb-1" style="text-transform:uppercase">Obras de Expansão & Modernização do Complexo (Caixa: ${fmtMoney(pt.money)})</h4>
+    <h4 class="small muted mb-1" style="text-transform:uppercase">Stadium Expansion & Modernization Projects (Club Treasury: ${fmtMoney(pt.money)})</h4>
     <div class="table-wrap">
       <table>
-        <tr><th>Obra / Setor</th><th>Nível Atual</th><th>Impacto no Clube</th><th>Custo</th><th>Action</th></tr>
+        <tr><th>Facility / Sector</th><th>Current Level</th><th>Club Impact</th><th>Cost</th><th>Action</th></tr>
         ${STADIUM_UPGRADES.map((u, idx)=>`
           <tr class="${idx===rowIndex?'kb-focus':''}" onclick="rowIndex=${idx};render()">
-            <td><strong>${u.label}</strong></td>
-            <td class="mono">${statValues[u.key]}</td>
+            <td><strong>${u.label || u.name}</strong></td>
+            <td class="mono">${statValues[u.key] || '0%'}</td>
             <td class="small muted">${u.desc}</td>
             <td class="mono warn font-bold">${fmtMoney(u.cost)}</td>
-            <td><button class="btn sm primary" onclick="event.stopPropagation();rowIndex=${idx};upgrade('${u.key}')">Investir</button></td>
+            <td><button class="btn sm primary" onclick="event.stopPropagation();rowIndex=${idx};upgrade('${u.key}')">Expand</button></td>
           </tr>
         `).join("")}
       </table>
