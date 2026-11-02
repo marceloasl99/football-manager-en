@@ -11,7 +11,9 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<meta name="description" content="Manager de futebol brasileiro no navegador: Séries A–D, Domestic Cup, evolução de elenco e PWA offline.">
+<meta name="description" content="European football management simulation in the browser: England, Spain, Germany, and Italy 4-tier league pyramids, UEFA Champions League, and dynamic club building.">
+<meta name="keywords" content="football-manager, soccer-manager, pwa, browser-game, premier-league, la-liga, bundesliga, serie-a, uefa-champions-league, sports-simulation">
+<meta name="author" content="Astrum Football Manager">
 <meta name="format-detection" content="telephone=no">
 <title>Astrum Football Manager — European Edition v5.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -7143,8 +7145,8 @@ function titleItems(){
     { label: "💾 Saves / Importar", hint: "Enter", run: () => openSavesModal() },
     { label: fsLabel, hint: "F", run: () => toggleFullScreen() }
   ];
-  if(deferredInstall) items.push({ label: "📲 Instalar app", hint: "Enter", run: () => installApp() });
-  items.push({ label: "ℹ Sobre & Atalhos", hint: "Enter", run: () => showAboutModal() });
+  if(deferredInstall) items.push({ label: "📲 Install Web App", hint: "Enter", run: () => installApp() });
+  items.push({ label: "ℹ About & Keybindings", hint: "Enter", run: () => showAboutModal() });
   return items;
 }
 function runTitleAction(i){ const it = titleItems()[i]; if(it) it.run(); }
@@ -7161,9 +7163,9 @@ function renderTitle(){
   titleIndex = clamp(titleIndex, 0, items.length - 1);
   app.innerHTML = `
   <div class="title-screen">
-    <div class="logo">🇧🇷⚽</div>
+    <div class="logo">🌍⚽</div>
     <h1>ASTRUM FOOTBALL MANAGER</h1>
-    <p class="sub">European Edition v${APP_VERSION} · Séries A–D · Copa & Continental · Arena & Simulador de Renda · Galeria de Troféus</p>
+    <p class="sub">European Edition v${APP_VERSION} · England, Spain, Germany & Italy · UEFA Champions League · Stadium & Multi-Purpose Arena · Trophy Room</p>
     <ul class="menu-list">
       ${items.map((it, idx) => `
         <li class="${idx===titleIndex?'sel':''}" role="button" tabindex="0" onclick="titleIndex=${idx};runTitleAction(${idx})">
@@ -7172,35 +7174,40 @@ function renderTitle(){
         </li>
       `).join("")}
     </ul>
-    <p class="muted small mt" style="margin-top:32px">Use <span class="kb-key">↑</span> <span class="kb-key">↓</span>, <span class="kb-key">Enter</span> e <span class="kb-key">F</span></p>
+    <p class="muted small mt" style="margin-top:32px">Use <span class="kb-key">↑</span> <span class="kb-key">↓</span>, <span class="kb-key">Enter</span> and <span class="kb-key">F</span></p>
   </div>`;
 }
 function showAboutModal(){
-  openModal(`Astrum FM — Brasil v${APP_VERSION}`,
-    "Comande um clube da Série D ao título da Série A!\n\n" +
-    "🆕 NOVIDADES v5.0:\n" +
-    "• ⚡ Correção de Vigor & Força: cálculo amortecido do XI e regeneração do DM eliminam perda crônica de força\n" +
-    "• ✈️ Rede de Scouting Internacional: envie olheiros para Europa, América do Sul e Arábia com delay de viagens real e 3 níveis de atletas\n" +
-    "• 🎪 Multi-Purpose Arena & Pre-Match Light Shows: novas obras no estádio geram renda corporativa per week e espetáculos com caldeirão pré-jogo\n" +
-    "• 🤫 Operação Match Bribe: use intermediários para pagar o adversário para perder e virar partidas decisivas (com riscos do UEFA / FA Financial Integrity!)\n" +
-    "• 🧠 Smart AFK Auto Play: dynamic tactics selection & physical rotation seleção dinâmica de melhores esquemas e rodízio físico automático para simular temporadas sem estafa\n\n" +
-    "🏆 RECURSOS v4.0:\n" +
-    "• 🏟️ Complete Stadium Expansion: capacity, Naming Rights, VIP Suites & Youth Academy capacidade, Naming Rights, VIP Suites, LED e Base\n" +
-    "• 🧮 Estimativa de Renda: simulador de preço de ingressos, público e projeção anual\n" +
-    "• 🌎 Central de Competições: Séries A–D, Domestic Cup, Supercopa e UEFA Champions League\n" +
-    "• 💰 Premiações completas e Trophy Room com conquistas desbloqueáveis\n\n" +
-    "📱 INSTALAR COMO APP:\n" +
-    "Chrome/Safari → menu → 'Adicionar à Tela Inicial' (precisa de https)\n\n" +
-    "⌨️ ATALHOS:\n" +
-    "• ←→ ou 1-0: Abas · ↑↓: Linha · Tab: seções do mercado\n" +
-    "• P: Jogar · M: Auto Play · A: Auto XI · F: Fullscreen\n" +
-    "• S: Save · Esc: Parar/Back"
+  openModal(`Astrum FM — European Edition v${APP_VERSION}`,
+    "Take charge of any European club from Tier 4 to UEFA Champions League glory!\n\n" +
+    "🌍 EUROPEAN LEAGUE PYRAMIDS:\n" +
+    "• 🏴󠁧󠁢󠁥󠁮󠁧󠁿 England: Premier League, Championship, League One, League Two (The FA Cup & Community Shield)\n" +
+    "• 🇪🇸 Spain: La Liga EA Sports, La Liga Hypermotion, Primera RFEF, Segunda RFEF (Copa del Rey & Supercopa)\n" +
+    "• 🇩🇪 Germany: Bundesliga, 2. Bundesliga, 3. Liga, Regionalliga (DFB-Pokal & DFL-Supercup)\n" +
+    "• 🇮🇹 Italy: Serie A, Serie B, Serie C, Serie D (Coppa Italia & Supercoppa Italiana)\n\n" +
+    "🆕 HIGHLIGHTS & MECHANICS (v5.0):\n" +
+    "• ⚡ Energy & Form Floors: Safe floors (35% stamina, 30 form) and Medical Center upgrades eliminate fatigue drain\n" +
+    "• ✈️ Global Scouting Network: Dispatch scouts to South America, Continental Europe, Middle East, and World Galácticos (2-window retention)\n" +
+    "• 🎪 Multi-Purpose Arena: Generates €/£18,000 passive income every single week\n" +
+    "• 🎆 Pre-Match Light Show & Pyrotechnics: Boosts matchday gate by +12% and squad morale by +3%\n" +
+    "• 🤫 Backroom Bribes: Secret incentive operations with UEFA / FA Financial Integrity investigation risks\n" +
+    "• 🧠 Smart AFK Auto Play: Dynamic formation switching (4-4-2, 4-3-3, 3-5-2, 4-2-3-1, 5-3-2) and fatigue rotation\n\n" +
+    "🏆 STADIUM & COMPETITIONS:\n" +
+    "• 🏟️ Complete Stadium Expansion: Stands, Hybrid Turf, 4K LED, VIP Suites, Youth Academy & Naming Rights\n" +
+    "• 🌐 UEFA Champions League: Compete against Europe's top clubs (Real Madrid, Bayern, PSG, Man City, Inter, Barca)\n" +
+    "• 🎖️ Trophy Room: Complete historical trophy cabinet and unlockable achievements\n\n" +
+    "📱 INSTALL AS APP (PWA):\n" +
+    "Desktop/Mobile → Browser menu → 'Install App' or 'Add to Home Screen'\n\n" +
+    "⌨️ KEYBINDINGS & SHORTCUTS:\n" +
+    "• ←→ or 1-0: Switch Navigation Tabs · ↑↓: Select Row / Menu Item\n" +
+    "• P: Play Matchday · M: Toggle Auto Play · A: Auto XI Lineup · F: Fullscreen\n" +
+    "• S: Quick Save · Esc: Close Modal / Pause Auto Play"
   );
 }
 function tryLoad(){
   const infos = [0,1,2].map(slotInfo).filter(Boolean);
   if(infos.length === 0){
-    openModal("No Saved Games Found", "Nenhum save compatível foi encontrado. Toque em 'New Career' para começar!");
+    openModal("No Saved Games Found", "No compatible save found. Tap 'New Career' to begin!");
     return;
   }
   if(infos.length === 1){ loadSlotAndGo(infos[0].slot); return; }
