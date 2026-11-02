@@ -4835,7 +4835,9 @@ function startAutoPlay(weeksCount = 0){
   autoPlayTargetWeeks = weeksCount;
   autoPlaySaveCounter = 0;
   runAutoPlayStep();
-  render();
+  
+
+render();
 }
 
 function stopAutoPlay(reasonMsg = null){
@@ -7598,6 +7600,23 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     }).catch(() => {});
   });
 }
+
+// URL query parameters support for direct navigation / testing
+try {
+  const _params = new URLSearchParams(window.location.search);
+  const _view = _params.get('view');
+  const _tab = _params.get('tab');
+  const _nation = _params.get('nation') || 'england';
+  if(_view === 'newGame'){
+    selectedNation = _nation;
+    currentView = 'newGame';
+  } else if(_view === 'game'){
+    newGame({ nation: _nation, name: (_params.get('club') || 'Crown Athletic'), difficulty: 'normal', slot: 0 });
+    if(_tab) currentView = _tab;
+    else currentView = 'home';
+    if(_params.get('mktSection')) transferSection = parseInt(_params.get('mktSection'), 10);
+  }
+} catch(e) {}
 
 render();
 </script>

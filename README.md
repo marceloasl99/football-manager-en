@@ -4,6 +4,30 @@
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/01_title_screen.png" alt="Title Screen" width="48%">
+  <img src="docs/screenshots/02_new_career_nation_select.png" alt="European Nation Selection" width="48%">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/03_club_dashboard.png" alt="Club Dashboard" width="48%">
+  <img src="docs/screenshots/04_tactics_formation.png" alt="Tactics & Formation" width="48%">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/05_squad_management.png" alt="Squad Management" width="48%">
+  <img src="docs/screenshots/06_international_scouting.png" alt="International Scouting" width="48%">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/07_stadium_and_arena.png" alt="Stadium Complex & Arena" width="48%">
+  <img src="docs/screenshots/08_competitions_and_europe.png" alt="Competitions & Europe" width="48%">
+</p>
+
+---
+
 ## 🌍 European League Pyramids (288 Authentic Clubs)
 
 Choose your country and lead any club from the fourth tier of national football to top-flight glory and the UEFA Champions League.
